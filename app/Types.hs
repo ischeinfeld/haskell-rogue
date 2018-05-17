@@ -69,3 +69,37 @@ data World = World { wDepth  :: Int
                    , wHero   :: Hero
                    , wLevel  :: Level
                    , wLevels :: [Level] }
+
+
+----------------
+-- Default Level
+----------------
+
+emptyLevel = Level { lDepth    = 0
+                   , lGold     = M.empty
+                   , lItems    = M.empty
+                   , lMapped   = M.fromList [((1,1), True)]
+                   , lMax      = (1,1)
+                   , lTiles    = M.empty
+                   , lVillains = M.empty }
+
+-- bare fists/no weapon
+fists = Weapon 0 "Bare fists" 0
+
+-- no armor
+rags = Armor 0 "Rags"
+
+-- a basic world used to start the game
+genesis  = World { wDepth  = 0
+           , wHero   = commoner
+           , wLevel  = emptyLevel
+           , wLevels = [emptyLevel] }  -- all levels
+
+-- a basic hero
+commoner = Hero { hCurrPos = (1,1)
+                , hGold   = 0
+                , hHP     = 10
+                , hItems  = []
+                , hOldPos = (1,1)
+                , hWield  = fists
+                , hWears  = rags }
