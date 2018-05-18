@@ -4,7 +4,8 @@ import qualified Data.Map as M
 
 import           Types
 
-
+-- given a list of strings (assuming a text representation split on newlines)
+-- return a level
 strsToLevel :: [String] -> Level
 strsToLevel str = foldl populate emptyLevel {lMax=maxXY} asciiMap
   where
@@ -15,14 +16,14 @@ strsToLevel str = foldl populate emptyLevel {lMax=maxXY} asciiMap
     maxXY    = (maxX, maxY)
     populate lvl (coord, tile) =
       case tile of
-        '#' -> lvl { lTiles = M.insert coord Wall            t }
-        '>' -> lvl { lTiles = M.insert coord (St Downstairs) t }
-        '<' -> lvl { lTiles = M.insert coord (St Upstairs)   t }
-        '+' -> lvl { lTiles = M.insert coord (Dr Closed)     t }
-        '-' -> lvl { lTiles = M.insert coord (Dr Open)       t }
-        '~' -> lvl { lTiles = M.insert coord Acid            t }
+        '#' -> lvl { lTiles = M.insert coord Wall            tiles }
+        '>' -> lvl { lTiles = M.insert coord (St Downstairs) tiles }
+        '<' -> lvl { lTiles = M.insert coord (St Upstairs)   tiles }
+        '+' -> lvl { lTiles = M.insert coord (Dr Closed)     tiles }
+        '-' -> lvl { lTiles = M.insert coord (Dr Open)       tiles }
+        '~' -> lvl { lTiles = M.insert coord Acid            tiles }
         _   -> lvl
-        where t = lTiles lvl
+        where tiles = lTiles lvl
 
 
 isAcid coord lvl = case M.lookup coord (lTiles lvl) of

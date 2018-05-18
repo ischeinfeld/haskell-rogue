@@ -6,6 +6,7 @@ import           Level
 import           Types
 
 
+coordToChar :: Coord -> World -> Char
 coordToChar coord (World _ hero lvl _)
   | hCurrPos hero == coord      = '@'
   | isAcid        coord lvl     = '~'
@@ -21,13 +22,15 @@ coordToChar coord (World _ hero lvl _)
   | otherwise                   = ' '
 
 
+drawChar :: Char -> IO ()
 drawChar '@' = do
   setSGR [ SetConsoleIntensity BoldIntensity
          , SetColor Foreground Vivid Blue ]
   putChar '@'
 drawChar '#' = do
   setSGR [ SetConsoleIntensity BoldIntensity
-         , SetColor Foreground Vivid Black ]
+         , SetColor Foreground Vivid Black
+         , SetColor Background Vivid White]
   putChar  '#'
 drawChar '!' = do
   setSGR [ SetConsoleIntensity BoldIntensity
@@ -73,14 +76,16 @@ drawChar _ = do
   putChar ' '
 
 
+drawCoord :: World -> Coord -> IO ()
 drawCoord world coord = do
   uncurry (flip setCursorPosition) coord
   drawChar (coordToChar coord world)
 
 
+drawHero :: World -> IO ()
 drawHero world
   | newPos == oldPos = return ()
-  | otherwise        = do
+  | otherwise        =  do
     drawCoord world newPos
     drawCoord world oldPos
   where
@@ -89,6 +94,7 @@ drawHero world
     oldPos = hOldPos  hero
 
 
+drawWorld :: World -> IO ()
 drawWorld world = do
   setCursorPosition 0 0
   mapM_ drawChar (unlines chars)
